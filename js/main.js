@@ -18,7 +18,7 @@ function render_rates() {
   lookupPitchRollRC = generatePitchRollCurve(expo);
 
   var result = calc_rate(rate, acro, 500);
-  $("h1").text(result);
+  $("h1").text(result + " deg/s, " + Math.round(result/360.0 * 10.0)/10.0 + " flips/second");
 
   table = [];
   labels = [];
