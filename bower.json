@@ -1,0 +1,22 @@
+{
+  "name": "rates",
+  "authors": [
+    "icdark <icdark@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "Chart.js": "^2.0.0",
+    "jquery": "^2.2.3"
+  }
+}
