@@ -1,0 +1,95 @@
+var rotate_timeout;
+
+$(document).ready(function() {
+  render_rates();
+  $("input").change(render_rates);
+});
+
+function render_rates() {
+
+  $('#chart').remove();
+  $('#chartContainer').append('<canvas id="chart" width="400" height="400"></canvas>');
+
+  rcrate = parseFloat($("#rcrate").val());
+  rate = parseFloat($("#rate").val()) * 100 * rcrate;
+  acro = parseInt($("#acro").val());
+  expo = parseInt($("#expo").val());
+
+  lookupPitchRollRC = generatePitchRollCurve(expo);
+
+  var result = calc_rate(rate, acro, 500);
+  $("h1").text(result);
+
+  table = [];
+  labels = [];
+  for (i = 0; i <= 50; i++) {
+    table[i] = calc_rate(rate, acro, i*10);
+    labels[i] = i*2 + "%";
+  }
+
+  time_for_flip = 1/(table[table.length-1]/360) * 1200;
+  clearTimeout(rotate_timeout);
+  rotation(time_for_flip);
+
+  var data = {
+    labels: labels,
+    datasets: [
+    {
+      label: "Calucalted DPS",
+      fill: false,
+      data: table
+    }
+    ],
+    options: {
+      xAxes: [{
+        display: false
+      }]
+    }
+  };
+
+  var ctx = $('#chart');
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+      xAxes: [{
+        display: false
+      }],
+    }
+  });
+}
+
+function calc_rate(rate, acro, rc_cmd) {
+  tmp2 = parseInt(rc_cmd/100);
+  rc_cmd = lookupPitchRollRC[tmp2] + (rc_cmd - tmp2 * 100) * (lookupPitchRollRC[tmp2 + 1] - lookupPitchRollRC[tmp2]) / 100;
+
+  if (acro > 0) {
+    wow_factor = (rc_cmd/500.0) * acro/100.0;
+    factor = (wow_factor * rc_cmd) + rc_cmd;
+    degs = ((rate + 20) * factor) / 50;
+  } else {
+    degs = (rate + 20) * rc_cmd / 50;
+  }
+  return Math.round(degs*100)/100;
+}
+
+function generatePitchRollCurve(expo)
+{
+  lookupPitchRollRC = new Array();
+  for (i = 0; i < 7; i++) {
+    lookupPitchRollRC[i] = (2500 + expo * (i * i - 25)) * i * 100 / 2500;
+  }
+  return lookupPitchRollRC;
+}
+
+function rotation(duration){
+  rotate_timeout = setTimeout( function() {
+    $("#rotate img").rotate({
+      angle:0,
+      animateTo:360,
+      callback: rotation,
+      duration: duration,
+      easing: function(x, t, b, c, d) { return b+(t/d)*c ; },
+    });
+  }, 1000);
+}
