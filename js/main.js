@@ -27,7 +27,7 @@ function render_rates() {
     labels[i] = i*2 + "%";
   }
 
-  time_for_flip = 1/(table[table.length-1]/360) * 1200;
+  time_for_flip = points2time(table[table.length-1]);
   clearTimeout(rotate_timeout);
   rotation(time_for_flip);
 
@@ -55,8 +55,18 @@ function render_rates() {
       xAxes: [{
         display: false
       }],
-    }
+      onClick: chartClick,
+    },
   });
+}
+
+function chartClick(e) {
+  el = this.getElementAtEvent(e);
+  if (el[0]) {
+    index = el[0]._index;
+    value = el[0]._chart.config.data.datasets[0].data[index];
+    rotation(points2time(value));
+  }
 }
 
 function calc_rate(rate, acro, rc_cmd) {
@@ -92,4 +102,8 @@ function rotation(duration){
       easing: function(x, t, b, c, d) { return b+(t/d)*c ; },
     });
   }, 1000);
+}
+
+function points2time(p) {
+  return 1/(p/360) * 1000;
 }
