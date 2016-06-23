@@ -70,8 +70,8 @@ function chartClick(e) {
 }
 
 function calc_rate(rate, acro, rc_cmd) {
-  tmp2 = parseInt(rc_cmd/100);
-  rc_cmd = lookupPitchRollRC[tmp2] + (rc_cmd - tmp2 * 100) * (lookupPitchRollRC[tmp2 + 1] - lookupPitchRollRC[tmp2]) / 100;
+  tmp2 = parseInt(rc_cmd/20);
+  rc_cmd = lookupPitchRollRC[tmp2] + (rc_cmd - tmp2 * 20) * (lookupPitchRollRC[tmp2 + 1] - lookupPitchRollRC[tmp2]) / 20;
 
   if (acro > 0) {
     wow_factor = (rc_cmd/500.0) * acro/100.0;
@@ -86,8 +86,10 @@ function calc_rate(rate, acro, rc_cmd) {
 function generatePitchRollCurve(expo)
 {
   lookupPitchRollRC = new Array();
-  for (i = 0; i < 7; i++) {
-    lookupPitchRollRC[i] = (2500 + expo * (i * i - 25)) * i * 100 / 2500;
+  var j = 0.0;
+  for (i = 0; i < 31; i++) {
+    lookupPitchRollRC[i] = (2500 + expo * (j * j - 25)) * j * 100 / 2500;
+    j += 0.2;
   }
   return lookupPitchRollRC;
 }
