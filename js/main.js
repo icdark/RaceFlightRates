@@ -10,8 +10,7 @@ function render_rates() {
   $('#chart').remove();
   $('#chartContainer').append('<canvas id="chart" width="400" height="400"></canvas>');
 
-  rcrate = parseFloat($("#rcrate").val());
-  rate = parseFloat($("#rate").val()) * 100 * rcrate;
+  rate = parseFloat($("#rate").val());
   acro = parseInt($("#acro").val());
   expo = parseInt($("#expo").val());
 
@@ -76,9 +75,9 @@ function calc_rate(rate, acro, rc_cmd) {
   if (acro > 0) {
     wow_factor = (rc_cmd/500.0) * acro/100.0;
     factor = (wow_factor * rc_cmd) + rc_cmd;
-    degs = ((rate + 20) * factor) / 50;
+    degs = (rate * factor) / 500;
   } else {
-    degs = (rate + 20) * rc_cmd / 50;
+    degs = rate * rc_cmd / 500;
   }
   return Math.round(degs*100)/100;
 }
